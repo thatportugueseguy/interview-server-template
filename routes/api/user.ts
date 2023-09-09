@@ -7,7 +7,7 @@ router.get('/', function (_req, res) {
 
 router.post('/', function (req, res) {
   console.log(req.body, req.get('user-agent'));
-  return res.send('All good');
+  return res.sendStatus(201);
 });
 
 export default router;
