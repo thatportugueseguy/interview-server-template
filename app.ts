@@ -1,15 +1,19 @@
-import express, { ErrorRequestHandler } from 'express';
+import express, { type ErrorRequestHandler } from 'express';
 import dotenv from 'dotenv';
 
-import type { ErrorWithServerStatusCode } from './types/errors';
 import { StatusCode } from './types/statusCodes';
-
+import { apiPrefix } from './constants';
 import indexRoute from './routes/index';
+import apiRoute from './routes/api';
+
+import type { ErrorWithServerStatusCode } from './types/errors';
 
 dotenv.config();
 
 const app = express();
+app.use(express.json());
 app.use('/', indexRoute);
+app.use(`/${apiPrefix}`, apiRoute);
 
 // catch 404 and forward to error handler
 app.use(function (_req, _res, next) {
@@ -20,7 +24,7 @@ app.use(function (_req, _res, next) {
 
 // error handler
 app.use(function (err: Partial<ErrorWithServerStatusCode>, _req, res, _next) {
-  res.sendStatus(err.status || 500);
+  res.sendStatus(err.status || StatusCode.InternalServerError);
 } as ErrorRequestHandler);
 
 export default app;
